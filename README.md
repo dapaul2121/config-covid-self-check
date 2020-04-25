@@ -1,0 +1,1 @@
+# config-covid-self-check
