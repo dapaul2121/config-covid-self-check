@@ -196,5 +196,33 @@ module.exports = [
       form: 'symptoms_check',
       label: 'task.symptoms_check.title',
     }],
+  },
+
+  // COVID self-check
+  {
+    name: 'covid_symptoms_self_check_followup',
+    icon: 'icon-risk',
+    title: 'COVID Self Check follow-up',
+    appliesTo: 'reports',
+    appliesToType: ['COVID_SELF_CHECK'],
+    appliesIf: function (report) {
+        return report && true;
+    },
+    resolvedIf: function (report) {
+      return report && false;
+    },
+    events: [{
+      days: 1,
+      start: 1,
+      end: 3
+    }],
+    priority: {
+      level: 'high',
+    },
+    actions: [{
+      type: 'report',
+      form: 'covid_self_check',
+      label: 'COVID symptom check follow-up',
+    }],
   }
 ];
