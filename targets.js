@@ -6,7 +6,7 @@ const getField = (report, fieldPath) => [...(fieldPath || '').split('.')]
     }, report);
 
 const isTraveler = (contact) => { return getField(contact.contact, 'role') === 'traveler'; };
-
+const isCHW = (contact) => { return getField(contact.contact, 'role') === 'chw'; };
 const isToday = (someDate) => {
     const today = new Date();
     return someDate.getDate() === today.getDate() &&
@@ -18,6 +18,7 @@ const isDeclarationForm = (report) => { return report.form === 'declaration'; };
 const isLocatorForm = (report) => { return report.form === 'locator'; };
 const isQuarantineForm = (report) => { return report.form === 'quarantine'; };
 const isReferralForm = (report) => { return report.form === 'referral'; };
+//const isCovidLearningModuleForm = (report) => { return report.form === 'covid_form'; };
 
 module.exports = [
 
@@ -167,6 +168,20 @@ module.exports = [
             return isTraveler(contact) && contact.reports.some((report) => { return isReferralForm(report); });
         },
         date: 'reported'
+    },
+    {
+        id: 'covid-learning-modules-completed',
+        type: 'count',
+        icon: 'icon-hospital',
+        goal: 10,
+        translation_key: 'targets.referral.count',
+        subtitle_translation_key: 'targets.this_month.subtitle',
+        context:'user.role === "chw"',
+        appliesTo: 'reports',
+        appliesToType: ['delivery', 'pregnancy', 'death_report'],
+        appliesIf: function (contact) { return isCHW(contact);},
+        date: 'now',
+	idType: 'report'
     }
-
 ];
+

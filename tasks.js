@@ -1,3 +1,9 @@
+const getField = (report, fieldPath) => [...(fieldPath || '').split('.')]
+    .reduce((prev, fieldName) => {
+        if (prev === undefined) { return undefined; }
+        return prev[fieldName];
+    }, report);
+const isCHW = (contact) => { return getField(contact.contact, 'role') === 'chw'; };
 
 module.exports = [
   // Covid Rdt Followup
@@ -224,5 +230,77 @@ module.exports = [
       form: 'covid_self_check',
       label: 'COVID symptom check follow-up',
     }],
-  }
+  },
+  // Learning module 1
+  {
+    name: 'covid_education_module_1',
+    icon: 'icon-healthcare',
+    title: 'COVID learning module 1',
+    appliesTo: 'contacts',
+    appliesToType: ['person'],
+    appliesIf: function (contact) {
+        return isCHW(contact);
+    },
+    resolvedIf: function (contact) {
+        return Utils.getMostRecentReport(contact.reports, 'death_report');
+    },
+    events: [{
+      days: 1,
+      start: 1,
+      end: 3
+    }],
+    actions: [{
+      type: 'report',
+      form: 'death_report',
+      label: 'COVID learning module 1',
+    }],
+  },
+  // Learning module 2
+  {
+    name: 'covid_education_module_2',
+    icon: 'icon-healthcare',
+    title: 'COVID education module 2',
+    appliesTo: 'contacts',
+    appliesToType: ['person'],
+    appliesIf: function (contact) {
+        return isCHW(contact) && Utils.getMostRecentReport(contact.reports, 'death_report');
+    },
+    resolvedIf: function (contact) {
+        return Utils.getMostRecentReport(contact.reports, 'delivery');
+    },
+    events: [{
+      days: 1,
+      start: 1,
+      end: 3
+    }],
+    actions: [{
+      type: 'report',
+      form: 'delivery',
+      label: 'COVID education module 2',
+    }],
+  },
+  // Learning module 3
+  {
+    name: 'covid_education_module_3',
+    icon: 'icon-healthcare',
+    title: 'COVID education module 3',
+    appliesTo: 'contacts',
+    appliesToType: ['person'],
+    appliesIf: function (contact) {
+        return isCHW(contact) && Utils.getMostRecentReport(contact.reports, 'delivery');
+    },
+    resolvedIf: function (contact) {
+        return Utils.getMostRecentReport(contact.reports, 'pregnancy');
+    },
+    events: [{
+      days: 1,
+      start: 1,
+      end: 3
+    }],
+    actions: [{
+      type: 'report',
+      form: 'pregnancy',
+      label: 'COVID education module 3',
+    }],
+  },
 ];
